@@ -25,7 +25,7 @@ getDTstats <- function(ibmList){
   statList <- lapply(seq_along(ibmList), function(i){
     med <- aggregate(x = ibmList[[i]]$days,
                      by = list(ibmList[[i]]$addTemp),
-                     FUN = median, # median for each temperature
+                     FUN = mean, # median for each temperature
                      na.rm = TRUE)
     q <- aggregate(x = ibmList[[i]]$days,
                    by = list(ibmList[[i]]$addTemp),

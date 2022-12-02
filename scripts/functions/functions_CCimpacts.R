@@ -89,7 +89,7 @@ plotRTpropDiff <- function(tempDataList, nlsList, statList){
                                0.48, 0.5, 0.4, 0.5,
                                0.98, 1, 0.4, 0.5), ncol = 4, byrow = TRUE))
   sink("./results/rawRes_CCimpacts.csv")
-  cat("minimum;Q1;median;Q3;maximum;month;scenario;species\n")
+  cat("minimum;Q1;median;Q3;maximum;mean;month;scenario;species\n")
   lapply(seq_along(tempDataList), function(i){
     screen(i)
     par(cex = 0.8,
@@ -197,20 +197,22 @@ plotRTpropDiff <- function(tempDataList, nlsList, statList){
       c <- 0
       for(m in unique(diffList[[j]]$month)){
         c <- c + 1
-        meanX[c] <- median(diffList[[j]]$diffToptF[diffList[[j]]$month == m])
-        
+        meanX[c] <- mean(diffList[[j]]$diffToptF[diffList[[j]]$month == m])
         b <- boxplot(diffList[[j]]$diffToptF[diffList[[j]]$month == m],
                      at = as.numeric(m)+addX,
                      col = colX[j+1], add = TRUE, cex = 0.5, range = 0,
                      boxwex=0.7, outcol=colX[j+1], axes = FALSE,
                      medlwd = 2, boxcol = NA, whiskcol=colX[j+1], whisklty = 1,
                      staplecol = colX[j+1])
-        cat(paste0(paste(c(t(b$stats),m,unique(diffList[[j]]$scenario),sp[i]),
+        cat(paste0(paste(c(t(b$stats),meanX[c],m,unique(diffList[[j]]$scenario),sp[i]),
                          collapse=";"), "\n"))
         
         nX <- length(diffList[[j]]$diffToptF[diffList[[j]]$month == m])
       }
-      lines(meanX ~ c(c(1:12)+addX), col = colX[j+1], lty = 2)
+      if(j == 1) colMean <- "#FFCC33"
+      if(j == 2) colMean <- "#FF99FF"
+      lines(meanX ~ c(c(1:12)+addX), col = colMean, lty = 1, lwd = 1.5)
+      points(meanX ~ c(c(1:12)+addX), pch = 4, col = colMean, cex = 0.8)
     })
     if(i == 3 | i == 4){
       rect(xleft = 0, xright = 3.5, ybottom = -100,ytop = 100,
